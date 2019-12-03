@@ -4,5 +4,4 @@ import { ISanctionItem } from "./ISanctionItem";
 export interface ISanctionsAppMainProps {
   description: string;
   columns: IColumn[];
-  items : ISanctionItem[];
 }

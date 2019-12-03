@@ -194,69 +194,12 @@ export default class SanctionsAppMainWebPart extends BaseClientSideWebPart<ISanc
   
   }
 
-  public items(): ISanctionItem[] {
-    //debugger;
-    var listado: ISanctionItem[] = [];
-    const requestHeaders: Headers = new Headers();
-    requestHeaders.append('Content-Type', 'application/json; charset=utf-8');
-    const httpClientOptions: IHttpClientOptions = {
-      headers: requestHeaders,
-      method: "GET",
-      mode: "cors"
-};
-
-
-   //var url = this.fnHost + "readSanctions?pPageNumber=1&pPageSize=10000";
-   var url = 'https://fn-np-sanctions.azurewebsites.net/api/readSanctions?code=XCRB/3/A62ZF10CG6p3p1MHMsZE5HCaHRTx/VcwDWaJ3FOAWDk6Irw==&pPageNumber=1&pPageSize=10000'
-   this.context.httpClient.get(url, HttpClient.configurations.v1, httpClientOptions)
-    .then((response: HttpClientResponse): Promise<{ value: IListResponseSanctionItem[] }> => {
-        console.log("Entra response.json");
-        console.log(response);
-      
-      return response.json();
-    })
-    .then((response: { value: IListResponseSanctionItem[] }): ISanctionItem[] => {
-      // tslint:disable-next-line: no-function-expression
-      _.forEach(response, function (anitem) {
-        var itemListado: ISanctionItem;
-        itemListado = { from: '', grounds: '', id: 0, name: '', nationality: '', projCountry: '', source: '', status: '', to: '', type: '', rowcount: '' };
-        itemListado.from = anitem["datefrom"];
-        itemListado.grounds = anitem["grounds"];
-        itemListado.id = anitem["id"];
-        itemListado.name = anitem["firmName"];
-        itemListado.nationality = anitem["nationality"];
-        itemListado.projCountry = anitem["country"];
-        itemListado.source = anitem["source"];
-        itemListado.status = anitem["statusName"];
-        try {
-          var dateFrom = new Date(anitem["datefrom"]);
-          itemListado.from = Intl.DateTimeFormat('en-GB', { year: 'numeric', month: 'short', day: '2-digit' }).format(dateFrom);
-          var dateTo = new Date(anitem["dateto"]);
-          itemListado.to = Intl.DateTimeFormat('en-GB', { year: 'numeric', month: 'short', day: '2-digit' }).format(dateTo);
-        } catch (Exception) {
-          itemListado.from = anitem["datefrom"];
-          itemListado.to = anitem["dateto"];
-        }
-        itemListado.type = anitem["entity"];
-        itemListado.rowcount = anitem["rowCnt"];
-        listado.push(itemListado);
-      });
-      return listado;
-    }, (error: any): void => {
-      console.log("There was an error loading items");
-    });
-
-  return listado;
-
-};
-
   public render(): void {
-    const element: React.ReactElement<ISanctionsAppMainProps > = React.createElement(
+    const element: React.ReactElement<ISanctionsAppMainProps> = React.createElement(
       SanctionsAppMain,
       {
         description: this.properties.description,
-        columns: this._buildColumns(),
-        items: this.items()
+        columns: this._buildColumns()
       }
     );
 
