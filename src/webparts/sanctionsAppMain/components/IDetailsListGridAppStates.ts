@@ -3,4 +3,5 @@ import { ISanctionItem } from './ISanctionItem';
 
 export interface IDetailsListGridAppStates{
     items: ISanctionItem[];
+    loading: boolean;
 }
